@@ -1,10 +1,20 @@
 const dotenv = require('dotenv');
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 dotenv.config({ path: envFile });
+
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const fetch = require('node-fetch'); // add this if your Node version <18
+
+const { Client, Collection, GatewayIntentBits } = require('discord.js');
+
+const client = new Client({ 
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ]
+});
 
 client.commands = new Collection();
 
@@ -39,21 +49,14 @@ for (const file of eventFiles) {
 	}
 }
 
-Client.on('messageCreate', async (message) => {
-  // Ignore messages from bots to prevent loops
+client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
-
-  // Only listen in the specific private channel
   if (message.channel.id !== process.env.DAILY_TWISTED_CHANNEL_ID) return;
-
-  // Only allow your dev user to trigger it
   if (message.author.id !== process.env.DEV_USER_ID) return;
 
-  // Check if the message content matches your trigger word
   if (message.content.toLowerCase() === 'testtwisted') {
-    // Here you call your test function or run the test logic
     try {
-      const response = 'your-twisted-embed-name'; // or ask user to type which twisted if you want
+      const response = 'your-twisted-embed-name'; // customize as needed
       
       const embedsDir = path.join(__dirname, 'embeds');
       const filePath = path.join(embedsDir, `${response}.json`);
