@@ -6,6 +6,48 @@ const devUserId = process.env.DEV_USER_ID;
 const webhookUrl = process.env.WEBHOOK_URL;
 const channelId = process.env.DAILY_TWISTED_CHANNEL_ID; // private channel ID
 
+function checkEmbedsBasic() {
+  console.log('[DailyTwisted] Starting embed file check...');
+
+  const embedsDir = path.join(__dirname, '..', 'embeds');
+
+  if (!fs.existsSync(embedsDir)) {
+    console.log('[DailyTwisted] Embeds folder not found:', embedsDir);
+    return;
+  }
+
+  const files = fs.readdirSync(embedsDir).filter(file => file.endsWith('.json'));
+
+  if (files.length === 0) {
+    console.log('[DailyTwisted] No embed JSON files found.');
+    return;
+  }
+
+  for (const file of files) {
+    const filePath = path.join(embedsDir, file);
+
+    try {
+      const raw = fs.readFileSync(filePath, 'utf8').trim();
+      if (!raw) {
+        console.log(`[DailyTwisted] Skipping empty file: ${file}`);
+        continue;
+      }
+
+      const data = JSON.parse(raw);
+
+      if (data.embeds && Array.isArray(data.embeds) && data.embeds.length > 0) {
+        console.log(`[DailyTwisted] ${file}: Has embeds`);
+      } else {
+        console.log(`[DailyTwisted] ${file}: No embeds found`);
+      }
+    } catch (err) {
+      console.log(`[DailyTwisted] ${file}: Failed to read or parse (${err.message})`);
+    }
+  }
+
+  console.log('[DailyTwisted] Embed check complete.');
+}
+
 // Sends prompt, waits for response, then sends embed via webhook
 async function promptTwisted(client, channel) {
   try {
@@ -63,7 +105,7 @@ async function promptTwisted(client, channel) {
   }
 }
 
-// Main standby function that schedules the daily prompt at 8 PM
+// Main standby function that schedules the daily prompt at 8 PM and listens for manual test trigger
 function standbyUntil8PM(client) {
   const askedToday = { date: null };
 
