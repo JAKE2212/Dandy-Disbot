@@ -1,4 +1,7 @@
 const { Events } = require('discord.js');
+const embedLoader = require('./embed-loader');
+
+await embedLoader();
 
 module.exports = {
 	name: Events.ClientReady,
