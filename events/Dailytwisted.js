@@ -1,39 +1,43 @@
 const fs = require('fs');
 const path = require('path');
 
-module.exports = async () => {
-  const embedsPath = path.join(__dirname, '..', 'embeds');
+async function checkEmbedsBasic() {
+  const embedsDir = path.join(__dirname, 'embeds'); // adjust path if needed
 
-  console.log('[Embed Loader] Starting up...');
-
-  try {
-    if (!fs.existsSync(embedsPath)) {
-      console.error('[Embed Loader] Folder not found: /embeds');
-      return;
-    }
-
-    const files = fs.readdirSync(embedsPath).filter(file => file.endsWith('.json'));
-
-    if (files.length === 0) {
-      console.log('[Embed Loader] No JSON files found in /embeds.');
-      return;
-    }
-
-    console.log(`[Embed Loader] Found ${files.length} embed file(s):`);
-
-    files.forEach((file, index) => {
-      const filePath = path.join(embedsPath, file);
-      try {
-        const json = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-        console.log(`- (${index + 1}) ${file} loaded.`);
-      } catch (err) {
-        console.error(`[Embed Loader] Failed to parse ${file}:`, err.message);
-      }
-    });
-
-    console.log('[Embed Loader] All available embeds processed.');
-  } catch (err) {
-    console.error('[Embed Loader] Fatal error while reading embeds:', err.message);
+  if (!fs.existsSync(embedsDir)) {
+    console.error('Embeds folder not found:', embedsDir);
+    return;
   }
-};
+
+  const files = fs.readdirSync(embedsDir).filter(f => f.endsWith('.json'));
+
+  if (files.length === 0) {
+    console.log('No embed JSON files found.');
+    return;
+  }
+
+  console.log(`Found ${files.length} JSON files:`);
+  
+  for (const file of files) {
+    const filePath = path.join(embedsDir, file);
+    try {
+      const raw = fs.readFileSync(filePath, 'utf8').trim();
+      if (!raw) {
+        console.log(`- Skipping empty file: ${file}`);
+        continue;
+      }
+
+      const data = JSON.parse(raw);
+      if (data.embeds && Array.isArray(data.embeds) && data.embeds.length > 0) {
+        console.log(`- ${file}: Has embeds`);
+      } else {
+        console.log(`- ${file}: No embeds found`);
+      }
+    } catch (err) {
+      console.log(`- ${file}: Failed to parse JSON (${err.message})`);
+    }
+  }
+}
+
+module.exports = checkEmbedsBasic;
 

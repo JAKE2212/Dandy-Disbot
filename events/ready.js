@@ -1,12 +1,12 @@
 const { Events } = require('discord.js');
-const embedLoader = require('./embed-loader');
-
-await embedLoader();
-
+const checkEmbedsBasic = require('../Dailytwisted.js');
 module.exports = {
 	name: Events.ClientReady,
 	once: true,
-	execute(client) {
+	async execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
+
+
+		await checkEmbedsBasic();
 	},
 };
