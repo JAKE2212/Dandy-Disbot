@@ -1,5 +1,10 @@
+require('dotenv').config({ path: '.env.production' });
 const fs = require('fs');
 const path = require('path');
+const devUserId = process.env.DEV_USER_ID;
+const webhookUrl = process.env.WEBHOOK_URL;
+
+
 
 function checkEmbedsBasic() {
   console.log('[DailyTwisted] Starting embed file check...');
@@ -43,5 +48,100 @@ function checkEmbedsBasic() {
   console.log('[DailyTwisted] Embed check complete.');
 }
 
-module.exports = checkEmbedsBasic;
+function standbyUntil8PM(client) {
+  const askedToday = { date: null };
+
+  setInterval(() => {
+    const now = new Date();
+
+    // Convert current time to EST (New York timezone)
+    const estTime = now.toLocaleString("en-US", { timeZone: "America/New_York" });
+    const estDate = new Date(estTime);
+
+    const hours = estDate.getHours();
+    const minutes = estDate.getMinutes();
+
+    // Only ask once per day at exactly 20:00 EST
+    if (hours === 20 && minutes === 0) {
+      const today = estDate.toDateString();
+
+      if (askedToday.date !== today) {
+        askedToday.date = today;
+
+        client.users.fetch(devUserId)
+          .then(user => {
+            user.createDM().then(dm => {
+              dm.send("What Twisted is it today?").catch(console.error);
+
+              const filter = m => m.author.id === devUserId;
+              const collector = dm.channel ? dm.channel.createMessageCollector({ filter, max: 1, time: 10 * 60 * 1000 }) : null;
+
+              if (!collector) {
+                console.error('[DailyTwisted] Unable to create message collector');
+                return;
+              }
+
+              collector.on('collect', message => {
+                const response = message.content.trim().toLowerCase();
+
+                dm.send(`Got it! You said: "${response}"`).catch(console.error);
+
+                const embedsDir = path.join(__dirname, '..', 'embeds');
+                const filePath = path.join(embedsDir, `${response}.json`);
+
+                if (!fs.existsSync(filePath)) {
+                  dm.send(`Sorry, I couldn't find an embed for "${response}".`).catch(console.error);
+                  console.log(`[DailyTwisted] No embed found for "${response}"`);
+                  return;
+                }
+
+                try {
+                  const raw = fs.readFileSync(filePath, 'utf8');
+                  const data = JSON.parse(raw);
+
+                  if (!webhookUrl) {
+                    dm.send('Webhook URL is not configured.').catch(console.error);
+                    console.error('[DailyTwisted] WEBHOOK_URL not set!');
+                    return;
+                  }
+
+                  fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                  })
+                    .then(() => {
+                      dm.send(`Embed for "${response}" sent to the webhook.`).catch(console.error);
+                      console.log(`[DailyTwisted] Embed for "${response}" sent.`);
+                    })
+                    .catch(err => {
+                      dm.send('Failed to send embed to webhook.').catch(console.error);
+                      console.error(`[DailyTwisted] Error sending webhook: ${err}`);
+                    });
+                } catch (err) {
+                  dm.send('Failed to read or parse embed file.').catch(console.error);
+                  console.error(`[DailyTwisted] Error reading/parsing embed file: ${err}`);
+                }
+              });
+
+              collector.on('end', collected => {
+                if (collected.size === 0) {
+                  dm.send("You didn't respond in time. Please try again later.").catch(console.error);
+                  console.log('[DailyTwisted] No response received within time limit.');
+                }
+              });
+            }).catch(console.error);
+          })
+          .catch(console.error);
+      }
+    }
+  }, 60 * 1000); // checks every minute
+}
+
+module.exports = {
+  checkEmbedsBasic,
+  standbyUntil8PM
+};
+
+
 

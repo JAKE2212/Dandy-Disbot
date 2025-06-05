@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const checkEmbedsBasic = require('./Dailytwisted.js')
+const { checkEmbedsBasic, standbyUntil8PM  } = require('./Dailytwisted.js')
 
 module.exports = {
 	name: Events.ClientReady,
@@ -7,5 +7,6 @@ module.exports = {
 	execute(client) {
 		console.log(`Ready! Logged in as ${client.user.tag}`);
 		checkEmbedsBasic();
+		standbyUntil8PM();
 	},
 };
