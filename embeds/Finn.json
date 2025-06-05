@@ -1,0 +1,25 @@
+{
+  "content": "*Today's Twisted Is........* 🌟 <@&1379964003991687288>",
+  "embeds": [
+    {
+      "color": 8504809,
+      "image": {
+        "url": "https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/2/2d/Twisted_Finn_Full_Render.png/revision/latest?cb=20240830061710"
+      },
+      "thumbnail": {
+        "url": ""
+      },
+      "description": "## Finn <:DWFinn:1342989261963526276> ",
+      "fields": [],
+      "footer": {
+        "text": "Good Look on your runs today everyone!"
+      }
+    }
+  ],
+  "allowed_mentions": {
+    "parse": [],
+    "roles": [
+      "1379964003991687288"
+    ]
+  }
+}

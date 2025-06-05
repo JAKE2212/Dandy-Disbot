@@ -1,0 +1,25 @@
+{
+  "content": "*Today's Twisted Is........* 🌟 <@&1379964003991687288>",
+  "embeds": [
+    {
+      "color": 13520719,
+      "image": {
+        "url": "https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/5/5b/Twisted_Sprout_Full_Render.png/revision/latest/scale-to-width-down/1000?cb=20240820173449"
+      },
+      "thumbnail": {
+        "url": ""
+      },
+      "description": "## Sprout <:DWSprout:1342990078279946240> ",
+      "fields": [],
+      "footer": {
+        "text": "Good Look on your runs today everyone!"
+      }
+    }
+  ],
+  "allowed_mentions": {
+    "parse": [],
+    "roles": [
+      "1379964003991687288"
+    ]
+  }
+}

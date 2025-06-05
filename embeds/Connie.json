@@ -1,0 +1,25 @@
+{
+  "content": "*Today's Twisted Is........* 🌟 <@&1379964003991687288>",
+  "embeds": [
+    {
+      "color": 8508905,
+      "image": {
+        "url": "https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/7/73/Twisted_Connie_Full_Render.png/revision/latest?cb=20241206183455"
+      },
+      "thumbnail": {
+        "url": ""
+      },
+      "description": "## Connie <:DWConnie:1342989243156271114> ",
+      "fields": [],
+      "footer": {
+        "text": "Good Look on your runs today everyone!"
+      }
+    }
+  ],
+  "allowed_mentions": {
+    "parse": [],
+    "roles": [
+      "1379964003991687288"
+    ]
+  }
+}
