@@ -2,12 +2,6 @@ const fs = require('fs');
 const path = require('path');
 
 module.exports = async () => {
-  // ✅ Only run in development
-  if (process.env.NODE_ENV !== 'development') {
-    console.log('🛑 Skipping embed loader (not in development mode)');
-    return;
-  }
-
   const embedsPath = path.join(__dirname, '..', 'embeds');
 
   try {
@@ -31,3 +25,4 @@ module.exports = async () => {
     console.error('❌ Error reading embed folder:', err);
   }
 };
+
