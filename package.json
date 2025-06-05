@@ -1,0 +1,22 @@
+{
+  "name": "dandy-disbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+  "start": "cross-env NODE_ENV=production node index.js",
+  "start:dev": "cross-env NODE_ENV=development node index.js",
+  "deploy:dev": "cross-env NODE_ENV=development node deploy-commands.js",
+  "deploy:prod": "cross-env NODE_ENV=production node deploy-commands.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}
