@@ -39,4 +39,48 @@ for (const file of eventFiles) {
 	}
 }
 
+Client.on('messageCreate', async (message) => {
+  // Ignore messages from bots to prevent loops
+  if (message.author.bot) return;
+
+  // Only listen in the specific private channel
+  if (message.channel.id !== process.env.DAILY_TWISTED_CHANNEL_ID) return;
+
+  // Only allow your dev user to trigger it
+  if (message.author.id !== process.env.DEV_USER_ID) return;
+
+  // Check if the message content matches your trigger word
+  if (message.content.toLowerCase() === 'testtwisted') {
+    // Here you call your test function or run the test logic
+    try {
+      const response = 'your-twisted-embed-name'; // or ask user to type which twisted if you want
+      
+      const embedsDir = path.join(__dirname, 'embeds');
+      const filePath = path.join(embedsDir, `${response}.json`);
+
+      if (!fs.existsSync(filePath)) {
+        return message.channel.send(`Sorry, I couldn't find an embed for "${response}".`);
+      }
+
+      const raw = fs.readFileSync(filePath, 'utf8');
+      const data = JSON.parse(raw);
+
+      if (!process.env.WEBHOOK_URL) {
+        return message.channel.send('Webhook URL is not configured.');
+      }
+
+      await fetch(process.env.WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      message.channel.send(`Embed for "${response}" sent to the webhook.`);
+    } catch (err) {
+      console.error(err);
+      message.channel.send('There was an error trying to send the embed.');
+    }
+  }
+});
+
 client.login(process.env.DISCORD_TOKEN);
