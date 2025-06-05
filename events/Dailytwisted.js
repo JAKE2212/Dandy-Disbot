@@ -1,10 +1,10 @@
 require('dotenv').config({ path: '.env.production' });
 const fs = require('fs');
 const path = require('path');
+const fetch = require('node-fetch'); // make sure node-fetch is installed if Node < 18
 const devUserId = process.env.DEV_USER_ID;
 const webhookUrl = process.env.WEBHOOK_URL;
-
-
+const channelId = process.env.DAILY_TWISTED_CHANNEL_ID; // Your private channel ID
 
 function checkEmbedsBasic() {
   console.log('[DailyTwisted] Starting embed file check...');
@@ -51,7 +51,7 @@ function checkEmbedsBasic() {
 function standbyUntil8PM(client) {
   const askedToday = { date: null };
 
-  setInterval(() => {
+  setInterval(async () => {
     const now = new Date();
 
     // Convert current time to EST (New York timezone)
@@ -68,71 +68,65 @@ function standbyUntil8PM(client) {
       if (askedToday.date !== today) {
         askedToday.date = today;
 
-        client.users.fetch(devUserId)
-          .then(user => {
-            user.createDM().then(dm => {
-              dm.send("What Twisted is it today?").catch(console.error);
+        try {
+          const channel = await client.channels.fetch(channelId);
+          if (!channel) {
+            console.error('[DailyTwisted] Channel not found:', channelId);
+            return;
+          }
 
-              const filter = m => m.author.id === devUserId;
-              const collector = dm.channel ? dm.channel.createMessageCollector({ filter, max: 1, time: 10 * 60 * 1000 }) : null;
+          await channel.send("What Twisted is it today? (Please reply here)");
 
-              if (!collector) {
-                console.error('[DailyTwisted] Unable to create message collector');
+          const filter = m => m.author.id === devUserId && m.channel.id === channelId;
+          const collector = channel.createMessageCollector({ filter, max: 1, time: 10 * 60 * 1000 }); // 10 minutes
+
+          collector.on('collect', async message => {
+            const response = message.content.trim().toLowerCase();
+
+            await channel.send(`Got it! You said: "${response}"`);
+
+            const embedsDir = path.join(__dirname, '..', 'embeds');
+            const filePath = path.join(embedsDir, `${response}.json`);
+
+            if (!fs.existsSync(filePath)) {
+              channel.send(`Sorry, I couldn't find an embed for "${response}".`);
+              console.log(`[DailyTwisted] No embed found for "${response}"`);
+              return;
+            }
+
+            try {
+              const raw = fs.readFileSync(filePath, 'utf8');
+              const data = JSON.parse(raw);
+
+              if (!webhookUrl) {
+                channel.send('Webhook URL is not configured.');
+                console.error('[DailyTwisted] WEBHOOK_URL not set!');
                 return;
               }
 
-              collector.on('collect', message => {
-                const response = message.content.trim().toLowerCase();
-
-                dm.send(`Got it! You said: "${response}"`).catch(console.error);
-
-                const embedsDir = path.join(__dirname, '..', 'embeds');
-                const filePath = path.join(embedsDir, `${response}.json`);
-
-                if (!fs.existsSync(filePath)) {
-                  dm.send(`Sorry, I couldn't find an embed for "${response}".`).catch(console.error);
-                  console.log(`[DailyTwisted] No embed found for "${response}"`);
-                  return;
-                }
-
-                try {
-                  const raw = fs.readFileSync(filePath, 'utf8');
-                  const data = JSON.parse(raw);
-
-                  if (!webhookUrl) {
-                    dm.send('Webhook URL is not configured.').catch(console.error);
-                    console.error('[DailyTwisted] WEBHOOK_URL not set!');
-                    return;
-                  }
-
-                  fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                  })
-                    .then(() => {
-                      dm.send(`Embed for "${response}" sent to the webhook.`).catch(console.error);
-                      console.log(`[DailyTwisted] Embed for "${response}" sent.`);
-                    })
-                    .catch(err => {
-                      dm.send('Failed to send embed to webhook.').catch(console.error);
-                      console.error(`[DailyTwisted] Error sending webhook: ${err}`);
-                    });
-                } catch (err) {
-                  dm.send('Failed to read or parse embed file.').catch(console.error);
-                  console.error(`[DailyTwisted] Error reading/parsing embed file: ${err}`);
-                }
+              await fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
               });
 
-              collector.on('end', collected => {
-                if (collected.size === 0) {
-                  dm.send("You didn't respond in time. Please try again later.").catch(console.error);
-                  console.log('[DailyTwisted] No response received within time limit.');
-                }
-              });
-            }).catch(console.error);
-          })
-          .catch(console.error);
+              channel.send(`Embed for "${response}" sent to the webhook.`);
+              console.log(`[DailyTwisted] Embed for "${response}" sent.`);
+            } catch (err) {
+              channel.send('Failed to read or parse embed file.');
+              console.error(`[DailyTwisted] Error reading/parsing embed file: ${err}`);
+            }
+          });
+
+          collector.on('end', collected => {
+            if (collected.size === 0) {
+              channel.send("You didn't respond in time. Please try again later.");
+              console.log('[DailyTwisted] No response received within time limit.');
+            }
+          });
+        } catch (err) {
+          console.error('[DailyTwisted] Error fetching channel or sending message:', err);
+        }
       }
     }
   }, 60 * 1000); // checks every minute
@@ -140,8 +134,5 @@ function standbyUntil8PM(client) {
 
 module.exports = {
   checkEmbedsBasic,
-  standbyUntil8PM
+  standbyUntil8PM,
 };
-
-
-
