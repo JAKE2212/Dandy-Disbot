@@ -2,7 +2,7 @@
   "embeds": [
     {
       "title": "TWISTED OF THE DAY 🌀 {{date}}",
-      "description": "__**WARNING**__ ⚠️ Twisted {toon} is more likely to show up today.",
+      "description": "__**WARNING**__ ⚠️ Twisted {{toon}} is more likely to show up today.",
       "color": 6771523,
       "footer": {
         "text": "Good Luck with your Runs Today!"
