@@ -2,7 +2,7 @@ require('dotenv').config({
   path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.dev'
 });
 
-console.log('Webhook URL:', process.env.DAILY_TWISTED_WEBHOOK);
+console.log('Webhook URL:', process.env.DAILY_TWISTED_WEBHOOK_URL);
 
 const fs = require('node:fs');
 const path = require('node:path');
