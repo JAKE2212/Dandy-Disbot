@@ -26,13 +26,12 @@ const toonImages = {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('Twisted of The Day')
+    .setName('twisted-of-the-day')
     .setDescription('Send today\'s Twisted toon')
     .addStringOption(option =>
       option.setName('toon')
         .setDescription('The name of the toon')
         .setRequired(true)
-        .setDefaultMemberPermissions('0') // Hides the command from everyone by default
     ),
   async execute(interaction) {
     const toonInput = interaction.options.getString('toon');
