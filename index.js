@@ -2,8 +2,6 @@ require('dotenv').config({
   path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.dev'
 });
 
-console.log('Webhook URL:', process.env.DAILY_TWISTED_WEBHOOK_URL);
-
 const fs = require('node:fs');
 const path = require('node:path');
 const fetch = require('node-fetch'); // add this if your Node version <18

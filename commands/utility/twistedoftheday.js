@@ -58,18 +58,18 @@ module.exports = {
     const json = JSON.parse(raw);
 
     const modified = {
-      ...json,
-      embeds: json.embeds.map(embed => ({
-        ...embed,
-        title: embed.title?.replace('{{toon}}', toon),
-        description: embed.description
-          ?.replace('{{toon}}', toon)
-          ?.replace('{{date}}', today),
-        image: {
-          url: imageUrl
-        }
-      }))
-    };
+     ...json,
+     embeds: json.embeds.map(embed => ({
+         ...embed,
+         title: embed.title?.replace('{{toon}}', toon).replace('{{date}}', today),
+         description: embed.description
+            ?.replace('{{toon}}', toon)
+            ?.replace('{{date}}', today),
+         image: {
+            url: imageUrl
+    }
+  }))
+};
 
     try {
       await fetch(webhookUrl, {
