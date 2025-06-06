@@ -1,5 +1,4 @@
 const { Events } = require('discord.js');
-const { checkEmbedsBasic, standbyUntil8PM  } = require('./Dailytwisted.js')
 
 module.exports = {
 	name: Events.ClientReady,
