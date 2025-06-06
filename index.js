@@ -1,6 +1,8 @@
-const dotenv = require('dotenv');
-const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
-dotenv.config({ path: envFile });
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.dev'
+});
+
+console.log('Webhook URL:', process.env.DAILY_TWISTED_WEBHOOK);
 
 const fs = require('node:fs');
 const path = require('node:path');
