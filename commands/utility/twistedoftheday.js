@@ -24,6 +24,33 @@ const toonImages = {
 
 };
 
+const toonDisplayNames = {
+  Brightney: 'Brightney',
+  Connie: 'Connie',
+  Finn: 'Finn',
+  Rnd: 'Razzle and Dazzle',
+  Rodger: 'Rodger',
+  Teagan: 'Teagan',
+  Toodles: 'Toodles',
+  Blot: 'Blot',
+  Flutter: 'Flutter',
+  Gigi: 'Gigi',
+  Glisten: 'Glisten',
+  Goob: 'Goob',
+  Scraps: 'Scraps',
+  Astro: 'Astro',
+  Pebble: 'Pebble',
+  Vee: 'Vee',
+  Shelly: 'Shelly',
+  Sprout: 'Sprout'
+};
+
+const inputAliases = {
+  rnd: 'Rnd',       // Accept 'rnd' or 'RnD' as input
+  razzle: 'Rnd',
+  dazzle: 'Rnd',
+};
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('twisted-of-the-day')
@@ -35,8 +62,11 @@ module.exports = {
     ),
   async execute(interaction) {
     const toonInput = interaction.options.getString('toon');
+    const toonKey = inputAliases[toonInput] || 
+                Object.keys(toonImages).find(t => t.toLowerCase() === toonInput);
     const toon = toonInput.charAt(0).toUpperCase() + toonInput.slice(1).toLowerCase(); // Normalize name
-    const imageUrl = toonImages[toon];
+    const displayName = toonDisplayNames[toonKey];
+    const imageUrl = toonImages[toonKey];
     const today = new Date().toLocaleDateString('en-US');
     const webhookUrl = process.env.DAILY_TWISTED_WEBHOOK_URL;
 
@@ -61,7 +91,7 @@ module.exports = {
      ...json,
      embeds: json.embeds.map(embed => ({
          ...embed,
-         title: embed.title?.replace('{{toon}}', toon).replace('{{date}}', today),
+         title: embed.title?.replace('{{toon}}', displayName).replace('{{date}}', today),
          description: embed.description
             ?.replace('{{toon}}', toon)
             ?.replace('{{date}}', today),
