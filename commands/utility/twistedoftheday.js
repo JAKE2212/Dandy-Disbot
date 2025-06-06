@@ -2,6 +2,28 @@ const { SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
+const toonDisplayNames = {
+  Brightney: 'Brightney',
+  Connie: 'Connie',
+  Finn: 'Finn',
+  Rnd: 'Razzle and Dazzle',
+  Rodger: 'Rodger',
+  Teagan: 'Teagan',
+  Toodles: 'Toodles',
+  Blot: 'Blot',
+  Flutter: 'Flutter',
+  Gigi: 'Gigi',
+  Glisten: 'Glisten',
+  Goob: 'Goob',
+  Scraps: 'Scraps',
+  Astro: 'Astro',
+  Pebble: 'Pebble',
+  Vee: 'Vee',
+  Shelly: 'Shelly',
+  Sprout: 'Sprout'
+};
+
+
 const toonImages = {
     Brightney:'https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/c/ce/Twisted_Brightney_Full_Render.png/revision/latest/scale-to-width-down/1000?cb=20240830061428',
     Connie: 'https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/7/73/Twisted_Connie_Full_Render.png/revision/latest?cb=20241206183455',
@@ -22,27 +44,6 @@ const toonImages = {
     Shelly: 'https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/b/b6/Twisted_Shelly_Full_Render.png/revision/latest?cb=20240830061958',
     Sprout: 'https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/5/5b/Twisted_Sprout_Full_Render.png/revision/latest/scale-to-width-down/1000?cb=20240820173449'
 
-};
-
-const toonDisplayNames = {
-  Brightney: 'Brightney',
-  Connie: 'Connie',
-  Finn: 'Finn',
-  Rnd: 'Razzle and Dazzle',
-  Rodger: 'Rodger',
-  Teagan: 'Teagan',
-  Toodles: 'Toodles',
-  Blot: 'Blot',
-  Flutter: 'Flutter',
-  Gigi: 'Gigi',
-  Glisten: 'Glisten',
-  Goob: 'Goob',
-  Scraps: 'Scraps',
-  Astro: 'Astro',
-  Pebble: 'Pebble',
-  Vee: 'Vee',
-  Shelly: 'Shelly',
-  Sprout: 'Sprout'
 };
 
 const inputAliases = {
