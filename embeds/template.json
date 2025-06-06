@@ -1,0 +1,21 @@
+{
+  "embeds": [
+    {
+      "color": 6771523,
+      "title": "TWISTED OF THE DAY 🌀 {{date}}",
+      "description": "__**WARNING**__ ⚠️ Twisted {Toon} is more likely to show up today.",
+      "footer": {
+        "text": "Good Luck with your Runs Today!"
+      },
+      "image": {
+        "url": "{image}"
+      }
+    }
+  ],
+  "allowed_mentions": {
+    "parse": [],
+    "roles": [
+      "1379964003991687288"
+    ]
+  }
+}

@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const fetch = require('node-fetch'); // add this if your Node version <18
 
-const { Client, Collection, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 
 const client = new Client({ 
   intents: [
@@ -49,41 +49,6 @@ for (const file of eventFiles) {
 	}
 }
 
-client.on('messageCreate', async (message) => {
-  if (message.author.bot) return;
-  if (message.channel.id !== process.env.DAILY_TWISTED_CHANNEL_ID) return;
-  if (message.author.id !== process.env.DEV_USER_ID) return;
 
-  if (message.content.toLowerCase() === 'testtwisted') {
-    try {
-      const response = 'your-twisted-embed-name'; // customize as needed
-      
-      const embedsDir = path.join(__dirname, 'embeds');
-      const filePath = path.join(embedsDir, `${response}.json`);
-
-      if (!fs.existsSync(filePath)) {
-        return message.channel.send(`Sorry, I couldn't find an embed for "${response}".`);
-      }
-
-      const raw = fs.readFileSync(filePath, 'utf8');
-      const data = JSON.parse(raw);
-
-      if (!process.env.WEBHOOK_URL) {
-        return message.channel.send('Webhook URL is not configured.');
-      }
-
-      await fetch(process.env.WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      message.channel.send(`Embed for "${response}" sent to the webhook.`);
-    } catch (err) {
-      console.error(err);
-      message.channel.send('There was an error trying to send the embed.');
-    }
-  }
-});
 
 client.login(process.env.DISCORD_TOKEN);
