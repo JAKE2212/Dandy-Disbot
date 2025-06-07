@@ -82,7 +82,7 @@ module.exports = {
     // 3. Get display name + image
     const displayName = toonDisplayNames[toonKey] || toonKey;
     const imageUrl = toonImages[toonKey];
-    const today = new Date().toLocaleDateString('en-US');
+    const today = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
     const webhookUrl = process.env.DAILY_TWISTED_WEBHOOK_URL;
 
     if (!webhookUrl) {
