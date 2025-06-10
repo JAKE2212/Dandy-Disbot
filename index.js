@@ -4,7 +4,6 @@ require('dotenv').config({
 
 const fs = require('node:fs');
 const path = require('node:path');
-const fetch = require('node-fetch'); // add this if your Node version <18
 
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 
