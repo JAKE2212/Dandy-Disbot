@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -75,7 +75,7 @@ module.exports = {
     if (!toonKey || !toonImages[toonKey]) {
       return interaction.reply({
         content: `I don't have an image for **${userInput}**. Please update the image list.`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -88,7 +88,7 @@ module.exports = {
     if (!webhookUrl) {
       return interaction.reply({
         content: 'Webhook is not configured in `.env`.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -97,7 +97,7 @@ module.exports = {
     if (!fs.existsSync(templatePath)) {
       return interaction.reply({
         content: 'Embed template not found.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
@@ -127,13 +127,13 @@ module.exports = {
 
       await interaction.reply({
         content: `Sent **${displayName}** to the daily twisted channel.`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     } catch (err) {
       console.error('[Webhook Error]', err);
       await interaction.reply({
         content: 'Failed to send embed to webhook.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
   }
