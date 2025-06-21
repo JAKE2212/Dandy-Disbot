@@ -1,3 +1,4 @@
+/* This code snippet is defining a Discord slash command for a bot. Here's a breakdown of what it does: */
 const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
