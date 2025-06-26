@@ -46,7 +46,7 @@ const toonImages = {
   Teagan:
     "https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/7/7a/Twisted_Teagan_Full_Render.png/revision/latest?cb=20240830061609",
   Toodles:
-    "https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/7/7a/Twisted_Teagan_Full_Render.png/revision/latest?cb=20240830061609",
+    "https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/f/f8/Twisted_Toodles_Full_Render.png/revision/latest?cb=20240830061240",
   Blot: "https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/a/ab/Twisted_Blot_Full_Render.png/revision/latest?cb=20250523190457",
   Flutter:
     "https://static.wikia.nocookie.net/dandys-world-robloxhorror/images/5/5f/Twisted_Flutter_Full_Render.png/revision/latest?cb=20240823022638",
